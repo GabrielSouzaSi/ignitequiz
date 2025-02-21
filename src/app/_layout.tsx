@@ -22,12 +22,12 @@ export default function Layout() {
   }
 
   return (
-    <View className="flex-1">
-    <StatusBar backgroundColor={colors.grey[800]} barStyle="light-content" />
+    <View className="flex-1 bg-gray-900">
+    <StatusBar className="bg-gray-900" barStyle="light-content" />
     <Stack
       screenOptions={{
         headerShown: false,
-        contentStyle: { backgroundColor: colors.grey[100] },
+        contentStyle: { backgroundColor: colors.grey[800] },
       }}
     />
     </View>

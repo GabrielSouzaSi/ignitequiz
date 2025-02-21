@@ -5,7 +5,7 @@ module.exports = function (api) {
       ["babel-preset-expo", { jsxImportSource: "nativewind" }],
       "nativewind/babel",
     ],
-    plugins: [["inline-import", { extensions: [".sql"] }], ["module-resolver", {
+    plugins: [['react-native-reanimated/plugin'],["inline-import"], ["module-resolver", {
       alias: {
         "@": "./src"
       }

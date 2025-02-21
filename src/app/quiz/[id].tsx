@@ -45,7 +45,7 @@ export default function Quiz() {
       questions: quiz.questions.length
     });
 
-    router.push({
+    router.navigate({
         pathname: "/finish",
         params: {
             points: String(points),
@@ -85,7 +85,7 @@ export default function Quiz() {
       {
         text: 'Sim',
         style: 'destructive',
-        onPress: () => router.push('/')
+        onPress: () => router.navigate('/')
       },
     ]);
 

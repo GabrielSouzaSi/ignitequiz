@@ -37,7 +37,7 @@ export default function Home() {
         icon={Trophy}
         title="Vamos estudar"
         subtitle="Treine seus conhecimento"
-        onPress={() => router.push("./history")}
+        onPress={() => router.navigate("./history")}
       />
 
       <View className='w-full flex-row justify-center mt-8'>
@@ -52,7 +52,7 @@ export default function Home() {
         renderItem={({ item }) => (
           <QuizCard
             data={item}
-            onPress={() => router.push({
+            onPress={() => router.navigate({
               pathname: "/quiz/[id]",
               params: { id: item.id }
             })}
