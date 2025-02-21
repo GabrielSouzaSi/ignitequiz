@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Alert, ScrollView, View } from 'react-native';
 
-import { useNavigation, useRoute } from '@react-navigation/native';
-
-import { styles } from './styles';
+import { useLocalSearchParams, useRouter } from "expo-router";
 
 import { QUIZ } from '../../data/quiz';
 import { historyAdd } from '../../storage/quizHistoryStorage';
@@ -20,17 +18,16 @@ interface Params {
 
 type QuizProps = typeof QUIZ[0];
 
-export function Quiz() {
+export default function Quiz() {
   const [points, setPoints] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [quiz, setQuiz] = useState<QuizProps>({} as QuizProps);
   const [alternativeSelected, setAlternativeSelected] = useState<null | number>(null);
 
-  const { navigate } = useNavigation();
+  const router = useRouter();
 
-  const route = useRoute();
-  const { id } = route.params as Params;
+    const { id } = useLocalSearchParams();
 
   function handleSkipConfirm() {
     Alert.alert('Pular', 'Deseja realmente pular a questão?', [
@@ -48,10 +45,13 @@ export function Quiz() {
       questions: quiz.questions.length
     });
 
-    navigate('finish', {
-      points: String(points),
-      total: String(quiz.questions.length),
-    });
+    router.push({
+        pathname: "/finish",
+        params: {
+            points: String(points),
+            total: String(quiz.questions.length)
+        }
+    })
   }
 
   function handleNextQuestion() {
@@ -85,7 +85,7 @@ export function Quiz() {
       {
         text: 'Sim',
         style: 'destructive',
-        onPress: () => navigate('home')
+        onPress: () => router.push('/')
       },
     ]);
 
@@ -103,10 +103,15 @@ export function Quiz() {
   }
 
   return (
-    <View style={styles.container}>
+    <View className='flex-1 bg-gray-900'>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.question}
+        contentContainerStyle={{
+          alignItems: "center",
+          paddingTop: 80,
+          paddingBottom: 300,
+          padding: 32
+        }}
       >
         <QuizHeader
           title={quiz.title}
@@ -121,7 +126,7 @@ export function Quiz() {
           setAlternativeSelected={setAlternativeSelected}
         />
 
-        <View style={styles.footer}>
+        <View className='flex-row mt-6'>
           <OutlineButton title="Parar" onPress={handleStop} />
           <ConfirmButton onPress={handleConfirm} />
         </View>

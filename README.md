@@ -11,12 +11,12 @@ Farei o upgrade do projeto para a versão mais atual das bibliotecas[^2].
 
 ### Lista de Tarefas:
 
-- [x]  Criar um projeto expo atualizado com a navegação configura. 
+- [x]  Criar um projeto expo atualizado com a navegação configurada. 
 - [x]  Instalação e configuração do nativewind. 
 - [x]  Modificação da estrutura do tema do projeto. 
 - [ ]  Implementar nativewind em todo o projeto. 
-- [ ]  Implementar o Expo Router. 
+- [x]  Implementar o Expo Router. 
 - [x]  Estrutura de pastas(Inical). 
-- [ ]  Navegação entre telas.
-- [ ]  Acessar parâmetros nas rotas.
+- [x]  Navegação entre telas.
+- [x]  Acessar parâmetros nas rotas.
 - [ ]  Testar a navegação.

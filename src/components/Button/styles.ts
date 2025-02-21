@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.brand_mid,
-    marginRight: 16,
+    marginHorizontal: 20
   },
   title: {
     color: colors.white,

@@ -1,20 +1,19 @@
 import { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from "expo-router";
 import { View, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { HouseLine } from 'phosphor-react-native';
 
-import { Header } from '../../components/Header';
-import { HistoryCard, HistoryProps } from '../../components/HistoryCard';
+import { Header } from '../components/Header';
+import { HistoryCard, HistoryProps } from '../components/HistoryCard';
 
-import { styles } from './styles';
-import { historyGetAll, historyRemove } from '../../storage/quizHistoryStorage';
-import { Loading } from '../../components/Loading';
+import { historyGetAll, historyRemove } from '../storage/quizHistoryStorage';
+import { Loading } from '../components/Loading';
 
-export function History() {
+export default function History() {
   const [isLoading, setIsLoading] = useState(true);
   const [history, setHistory] = useState<HistoryProps[]>([]);
 
-  const { goBack } = useNavigation();
+  const router = useRouter();
 
   async function fetchHistory() {
     const response = await historyGetAll();
@@ -51,16 +50,16 @@ export function History() {
   }
 
   return (
-    <View style={styles.container}>
+    <View className='flex-1 bg-gray-900'>
       <Header
         title="Histórico"
         subtitle={`Seu histórico de estudos${'\n'}realizados`}
         icon={HouseLine}
-        onPress={goBack}
+        onPress={() => router.back()}
       />
 
       <ScrollView
-        contentContainerStyle={styles.history}
+        contentContainerStyle={{padding: 32}}
         showsVerticalScrollIndicator={false}
       >
         {
