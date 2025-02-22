@@ -1,3 +1,4 @@
+import { colors } from '@/styles/colors';
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -5,11 +6,11 @@ export const styles = StyleSheet.create({
     height: 8,
     width: '100%',
     borderRadius: 8,
-    backgroundColor: '#505059'
+    backgroundColor: colors.grey[500]
   },
   progress: {
     height: 8,
-    backgroundColor: '#00B37E',
+    backgroundColor: colors.brand_light,
     borderRadius: 8,
   }
 });

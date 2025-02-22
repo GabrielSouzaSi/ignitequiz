@@ -21,7 +21,7 @@ export default function Finish() {
 <View className=''>
       <Button
         title="Ir para o início"
-        onPress={() => router.navigate('/')}
+        onPress={() => router.push('/')}
         />
         </View>
     </View>

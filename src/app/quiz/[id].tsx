@@ -11,6 +11,7 @@ import { Question } from '../../components/Question';
 import { QuizHeader } from '../../components/QuizHeader';
 import { ConfirmButton } from '../../components/ConfirmButton';
 import { OutlineButton } from '../../components/OutlineButton';
+import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 
 interface Params {
   id: string;
@@ -25,9 +26,11 @@ export default function Quiz() {
   const [quiz, setQuiz] = useState<QuizProps>({} as QuizProps);
   const [alternativeSelected, setAlternativeSelected] = useState<null | number>(null);
 
+  const shake = useSharedValue(0)
+
   const router = useRouter();
 
-    const { id } = useLocalSearchParams();
+  const { id } = useLocalSearchParams();
 
   function handleSkipConfirm() {
     Alert.alert('Pular', 'Deseja realmente pular a questão?', [
@@ -46,11 +49,11 @@ export default function Quiz() {
     });
 
     router.navigate({
-        pathname: "/finish",
-        params: {
-            points: String(points),
-            total: String(quiz.questions.length)
-        }
+      pathname: "/finish",
+      params: {
+        points: String(points),
+        total: String(quiz.questions.length)
+      }
     })
   }
 
@@ -69,6 +72,8 @@ export default function Quiz() {
 
     if (quiz.questions[currentQuestion].correct === alternativeSelected) {
       setPoints(prevState => prevState + 1);
+    } else {
+      shakeAnimation();
     }
 
     setAlternativeSelected(null);
@@ -91,6 +96,22 @@ export default function Quiz() {
 
     return true;
   }
+
+  function shakeAnimation() {
+    shake.value = withSequence(withTiming(3, { duration: 400, easing: Easing.bounce }), withTiming(0))
+  }
+
+  const shakeStyleAnimated = useAnimatedStyle(() => {
+    return {
+      transform: [{
+        translateX: interpolate(
+          shake.value,
+          [0, 0.5, 1, 1.5, 2, 2.5, 3],
+          [0, -15, 0, 15, 0, -15, 0]
+        )
+      }]
+    }
+  })
 
   useEffect(() => {
     const quizSelected = QUIZ.filter(item => item.id === id)[0];
@@ -119,12 +140,14 @@ export default function Quiz() {
           totalOfQuestions={quiz.questions.length}
         />
 
-        <Question
-          key={quiz.questions[currentQuestion].title}
-          question={quiz.questions[currentQuestion]}
-          alternativeSelected={alternativeSelected}
-          setAlternativeSelected={setAlternativeSelected}
-        />
+        <Animated.View style={shakeStyleAnimated}>
+          <Question
+            key={quiz.questions[currentQuestion].title}
+            question={quiz.questions[currentQuestion]}
+            alternativeSelected={alternativeSelected}
+            setAlternativeSelected={setAlternativeSelected}
+          />
+        </Animated.View>
 
         <View className='flex-row mt-6'>
           <OutlineButton title="Parar" onPress={handleStop} />
