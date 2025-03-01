@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from "expo-router";
-import { View, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, ScrollView, Alert, Pressable } from 'react-native';
 import Animated, { Easing, FadeIn, FadeOut, LinearTransition, SlideInRight, SlideOutRight } from 'react-native-reanimated';
-import { HouseLine } from 'phosphor-react-native';
+import { HouseLine, Trash } from 'phosphor-react-native';
+import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 
 import { Header } from '../components/Header';
 import { HistoryCard, HistoryProps } from '../components/HistoryCard';
 
 import { historyGetAll, historyRemove } from '../storage/quizHistoryStorage';
 import { Loading } from '../components/Loading';
+import { colors } from '@/styles/colors';
 
 export default function History() {
   const [isLoading, setIsLoading] = useState(true);
@@ -66,11 +68,16 @@ export default function History() {
         {
           history.map((item) => (
             <Animated.View key={item.id} layout={LinearTransition} >
-              <TouchableOpacity
-                onPress={() => handleRemove(item.id)}
-              >
-                <HistoryCard data={item} />
-              </TouchableOpacity>
+              
+              <Swipeable overshootLeft={false} containerStyle={{width: "100%", height: 90, marginBottom: 12, backgroundColor: colors.danger_light, borderRadius: 6}} renderLeftActions={() => (
+                <Pressable className='w-[90px] h-[90px] rounded-md bg-red-500 items-center justify-center'>
+                  <Trash size={32} color={colors.grey[100]} />
+                </Pressable>
+          )} >
+              <HistoryCard data={item} />
+
+              </Swipeable>
+
             </Animated.View>
           ))
         }
