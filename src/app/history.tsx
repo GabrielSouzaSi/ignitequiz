@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from "expo-router";
-import { View, ScrollView, Alert, Pressable } from 'react-native';
+import { View, ScrollView, Alert, Pressable, TouchableOpacity, FlatList } from 'react-native';
 import Animated, { Easing, FadeIn, FadeOut, LinearTransition, SlideInRight, SlideOutRight } from 'react-native-reanimated';
 import { HouseLine, Trash } from 'phosphor-react-native';
-import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
+import Swipeable, { SwipeableMethods } from "react-native-gesture-handler/ReanimatedSwipeable";
 
 import { Header } from '../components/Header';
 import { HistoryCard, HistoryProps } from '../components/HistoryCard';
@@ -18,6 +18,8 @@ export default function History() {
 
   const router = useRouter();
 
+  const swipeableRef = useRef<SwipeableMethods | null>(null)
+
   async function fetchHistory() {
     const response = await historyGetAll();
     setHistory(response);
@@ -30,18 +32,27 @@ export default function History() {
     fetchHistory();
   }
 
-  function handleRemove(id: string) {
-    Alert.alert(
-      'Remover',
-      'Deseja remover esse registro?',
-      [
-        {
-          text: 'Sim', onPress: () => remove(id)
-        },
-        { text: 'Não', style: 'cancel' }
-      ]
-    );
+  // function handleRemove(id: string) {
+  //   remove(id)
+  // }
+  function handleRemove(id: string, index: number) {
+    remove(id)
+  }
 
+  function closePreviousSwipeable(
+    direction: "left" | "right",
+    open: SwipeableMethods | null
+  ) {
+    // if (direction === "left") {
+    //   console.warn("REMOVER")
+    // }
+
+    if (swipeableRef.current) {
+      swipeableRef.current.close()
+    }
+
+    // Define o Swipeable atual como o aberto
+    swipeableRef.current = open
   }
 
   useEffect(() => {
@@ -61,27 +72,61 @@ export default function History() {
         onPress={() => router.back()}
       />
 
-      <ScrollView
+      {/* <ScrollView
         contentContainerStyle={{ padding: 32 }}
         showsVerticalScrollIndicator={false}
       >
         {
           history.map((item) => (
             <Animated.View key={item.id} layout={LinearTransition} >
-              
-              <Swipeable overshootLeft={false} containerStyle={{width: "100%", height: 90, marginBottom: 12, backgroundColor: colors.danger_light, borderRadius: 6}} renderLeftActions={() => (
-                <Pressable className='w-[90px] h-[90px] rounded-md bg-red-500 items-center justify-center'>
-                  <Trash size={32} color={colors.grey[100]} />
-                </Pressable>
-          )} >
-              <HistoryCard data={item} />
-
-              </Swipeable>
-
+              <TouchableOpacity
+                onPress={() => handleRemove(item.id)}
+              >
+                <HistoryCard data={item} />
+              </TouchableOpacity>
             </Animated.View>
           ))
         }
-      </ScrollView>
+       </ScrollView> */}
+
+
+      <FlatList
+        data={history}
+        keyExtractor={(item) => item.id}
+        contentContainerClassName='p-8'
+        renderItem={({ item, index }) => {
+
+          let current: SwipeableMethods | null = null
+
+          return (
+            <Animated.View key={item.id} entering={SlideInRight} exiting={SlideOutRight} layout={LinearTransition}>
+              <Swipeable
+                ref={(swipeable) => (current = swipeable)}
+                overshootLeft={false}
+                containerStyle={{ width: "100%", height: 90, marginBottom: 12, backgroundColor: colors.grey[700], borderRadius: 6 }}
+                renderLeftActions={() => (
+                  <Pressable
+                    className='w-[90px] h-[90px] rounded-md bg-red-500 items-center justify-center'
+                    onPress={() => handleRemove(item.id, index)}
+                  >
+                    <Trash size={32} color={colors.grey[100]} />
+                  </Pressable>
+                )}
+                onSwipeableWillOpen={(direction) =>
+                  closePreviousSwipeable(direction, current)
+                }
+                leftThreshold={50}
+              >
+
+                <HistoryCard data={item} />
+
+              </Swipeable>
+            </Animated.View>
+          )
+        }}
+        contentContainerStyle={{ gap: 14 }}
+        showsVerticalScrollIndicator={false}
+      />
     </View>
   );
 }

@@ -23,7 +23,8 @@ export default function Layout() {
   }
 
   return (
-    <GestureHandlerRootView className="flex-1 bg-gray-900">
+    <GestureHandlerRootView>
+      <View className="flex-1 bg-gray-900">
         <StatusBar className="bg-gray-900" barStyle="light-content" />
         <Stack
           screenOptions={{
@@ -31,6 +32,7 @@ export default function Layout() {
             contentStyle: { backgroundColor: colors.grey[800] },
           }}
         />
+      </View>
     </GestureHandlerRootView>
   )
 }
