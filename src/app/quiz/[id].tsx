@@ -1,21 +1,20 @@
 import { useEffect, useState } from 'react';
-import { Alert, ScrollView, Text, View, ViewStyle } from 'react-native';
-
+import { Alert, Text, View, ViewStyle } from 'react-native';
 import { useLocalSearchParams, useRouter } from "expo-router";
 
+import { GestureDetector, Gesture } from 'react-native-gesture-handler';
+import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withSequence, withTiming, useAnimatedScrollHandler, Extrapolation, runOnJS } from 'react-native-reanimated';
+
+import { OverlayFeedback } from '@/components/OverlayFeedback';
 import { QUIZ } from '../../data/quiz';
 import { historyAdd } from '../../storage/quizHistoryStorage';
-
 import { Loading } from '../../components/Loading';
 import { Question } from '../../components/Question';
 import { QuizHeader } from '../../components/QuizHeader';
 import { ConfirmButton } from '../../components/ConfirmButton';
 import { OutlineButton } from '../../components/OutlineButton';
-import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withSequence, withTiming, useAnimatedScrollHandler, Extrapolation, runOnJS } from 'react-native-reanimated';
-import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import { ProgressBar } from '@/components/ProgressBar';
 import { colors } from '@/styles/colors';
-import { DefaultStyle } from 'react-native-reanimated/lib/typescript/hook/commonTypes';
 
 interface Params {
   id: string;
@@ -189,6 +188,7 @@ export default function Quiz() {
 
   return (
     <View className='flex-1 bg-gray-900'>
+      <OverlayFeedback status={1} />
       <Animated.View style={fixedProgressBarStyles}>
         <Text className='font-bold text-lg text-grey-100 mb-[7px] text-center'>
           {quiz.title}
