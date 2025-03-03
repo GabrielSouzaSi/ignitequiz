@@ -28,6 +28,7 @@ const CARD_SKIP_AREA = (-200)
 export default function Quiz() {
   const [points, setPoints] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [statusReplay, setStatusReplay] = useState(0)
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [quiz, setQuiz] = useState<QuizProps>({} as QuizProps);
   const [alternativeSelected, setAlternativeSelected] = useState<null | number>(null);
@@ -79,8 +80,10 @@ export default function Quiz() {
     }
 
     if (quiz.questions[currentQuestion].correct === alternativeSelected) {
+      setStatusReplay(1);
       setPoints(prevState => prevState + 1);
     } else {
+      setStatusReplay(2);
       shakeAnimation();
     }
 
@@ -188,7 +191,7 @@ export default function Quiz() {
 
   return (
     <View className='flex-1 bg-gray-900'>
-      <OverlayFeedback status={1} />
+      <OverlayFeedback status={statusReplay} />
       <Animated.View style={fixedProgressBarStyles}>
         <Text className='font-bold text-lg text-grey-100 mb-[7px] text-center'>
           {quiz.title}
