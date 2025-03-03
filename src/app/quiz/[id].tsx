@@ -11,7 +11,7 @@ import { Question } from '../../components/Question';
 import { QuizHeader } from '../../components/QuizHeader';
 import { ConfirmButton } from '../../components/ConfirmButton';
 import { OutlineButton } from '../../components/OutlineButton';
-import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withSequence, withTiming, useAnimatedScrollHandler, Extrapolation, AnimatedStyle } from 'react-native-reanimated';
+import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withSequence, withTiming, useAnimatedScrollHandler, Extrapolation, runOnJS } from 'react-native-reanimated';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import { ProgressBar } from '@/components/ProgressBar';
 import { colors } from '@/styles/colors';
@@ -24,6 +24,7 @@ interface Params {
 type QuizProps = typeof QUIZ[0];
 
 const CARD_INCLINATION = 10
+const CARD_SKIP_AREA = (-200)
 
 export default function Quiz() {
   const [points, setPoints] = useState(0);
@@ -155,7 +156,10 @@ export default function Quiz() {
     if (moveToLeft) {
       cardPosition.value = event.translationX;
     }
-  }).onEnd(() => {
+  }).onEnd((event) => {
+    if (event.translationX < CARD_SKIP_AREA){
+      runOnJS(handleSkipConfirm)();
+    }
     cardPosition.value = withTiming(0);
   })
 
