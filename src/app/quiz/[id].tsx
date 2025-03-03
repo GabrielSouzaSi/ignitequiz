@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Alert, ScrollView, Text, View } from 'react-native';
+import { Alert, ScrollView, Text, View, ViewStyle } from 'react-native';
 
 import { useLocalSearchParams, useRouter } from "expo-router";
 
@@ -11,16 +11,19 @@ import { Question } from '../../components/Question';
 import { QuizHeader } from '../../components/QuizHeader';
 import { ConfirmButton } from '../../components/ConfirmButton';
 import { OutlineButton } from '../../components/OutlineButton';
-import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withSequence, withTiming, useAnimatedScrollHandler, Extrapolation } from 'react-native-reanimated';
+import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withSequence, withTiming, useAnimatedScrollHandler, Extrapolation, AnimatedStyle } from 'react-native-reanimated';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import { ProgressBar } from '@/components/ProgressBar';
 import { colors } from '@/styles/colors';
+import { DefaultStyle } from 'react-native-reanimated/lib/typescript/hook/commonTypes';
 
 interface Params {
   id: string;
 }
 
 type QuizProps = typeof QUIZ[0];
+
+const CARD_INCLINATION = 10
 
 export default function Quiz() {
   const [points, setPoints] = useState(0);
@@ -148,9 +151,22 @@ export default function Quiz() {
   })
 
   const onPan = Gesture.Pan().onUpdate((event) => {
-    cardPosition.value = event.translationX;
+    const moveToLeft = event.translationX < 0;
+    if (moveToLeft) {
+      cardPosition.value = event.translationX;
+    }
   }).onEnd(() => {
     cardPosition.value = withTiming(0);
+  })
+
+  const dragStyles = useAnimatedStyle<ViewStyle>(() => {
+    const rotateZ = cardPosition.value / CARD_INCLINATION;
+    return {
+      transform: [
+        { translateX: cardPosition.value },
+        { rotateZ: `${rotateZ}deg` }
+      ] as ViewStyle['transform'],
+    }
   })
 
   useEffect(() => {
@@ -197,15 +213,15 @@ export default function Quiz() {
         <GestureDetector gesture={onPan}>
 
 
-        <Animated.View style={shakeStyleAnimated}>
-          <Question
-            key={quiz.questions[currentQuestion].title}
-            question={quiz.questions[currentQuestion]}
-            alternativeSelected={alternativeSelected}
-            setAlternativeSelected={setAlternativeSelected}
+          <Animated.View style={[shakeStyleAnimated, dragStyles]}>
+            <Question
+              key={quiz.questions[currentQuestion].title}
+              question={quiz.questions[currentQuestion]}
+              alternativeSelected={alternativeSelected}
+              setAlternativeSelected={setAlternativeSelected}
             />
-        </Animated.View>
-            </GestureDetector>
+          </Animated.View>
+        </GestureDetector>
 
         <View className='flex-row mt-6'>
           <OutlineButton title="Parar" onPress={handleStop} />
