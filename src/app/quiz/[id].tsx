@@ -12,6 +12,7 @@ import { QuizHeader } from '../../components/QuizHeader';
 import { ConfirmButton } from '../../components/ConfirmButton';
 import { OutlineButton } from '../../components/OutlineButton';
 import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withSequence, withTiming, useAnimatedScrollHandler, Extrapolation } from 'react-native-reanimated';
+import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import { ProgressBar } from '@/components/ProgressBar';
 import { colors } from '@/styles/colors';
 
@@ -30,6 +31,7 @@ export default function Quiz() {
 
   const shake = useSharedValue(0)
   const scrollY = useSharedValue(0)
+  const cardPosition = useSharedValue(0)
 
   const router = useRouter();
 
@@ -145,6 +147,12 @@ export default function Quiz() {
     }
   })
 
+  const onPan = Gesture.Pan().onUpdate((event) => {
+    cardPosition.value = event.translationX;
+  }).onEnd(() => {
+    cardPosition.value = withTiming(0);
+  })
+
   useEffect(() => {
     const quizSelected = QUIZ.filter(item => item.id === id)[0];
     setQuiz(quizSelected);
@@ -186,14 +194,18 @@ export default function Quiz() {
           />
         </Animated.View>
 
+        <GestureDetector gesture={onPan}>
+
+
         <Animated.View style={shakeStyleAnimated}>
           <Question
             key={quiz.questions[currentQuestion].title}
             question={quiz.questions[currentQuestion]}
             alternativeSelected={alternativeSelected}
             setAlternativeSelected={setAlternativeSelected}
-          />
+            />
         </Animated.View>
+            </GestureDetector>
 
         <View className='flex-row mt-6'>
           <OutlineButton title="Parar" onPress={handleStop} />
