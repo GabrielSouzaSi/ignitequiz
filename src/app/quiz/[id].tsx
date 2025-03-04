@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Alert, Text, View, ViewStyle } from 'react-native';
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Audio } from "expo-av";
+import * as Haptics from "expo-haptics";
 
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withSequence, withTiming, useAnimatedScrollHandler, Extrapolation, runOnJS } from 'react-native-reanimated';
@@ -120,7 +121,8 @@ export default function Quiz() {
     return true;
   }
 
-  function shakeAnimation() {
+  async function shakeAnimation() {
+    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     shake.value = withSequence(withTiming(3, { duration: 400, easing: Easing.bounce }), withTiming(0, undefined, (finished) => {
       'worlet';
       if (finished) {
