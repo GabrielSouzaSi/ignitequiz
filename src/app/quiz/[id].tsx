@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Alert, Text, View, ViewStyle } from 'react-native';
+import { Alert, BackHandler, Text, View, ViewStyle } from 'react-native';
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Audio } from "expo-av";
 import * as Haptics from "expo-haptics";
@@ -203,6 +203,15 @@ export default function Quiz() {
     setQuiz(quizSelected);
     setIsLoading(false);
   }, []);
+
+   useEffect(() => {
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        handleStop,
+      );
+  
+      return () => backHandler.remove();
+    }, [])
 
   if (isLoading) {
     return <Loading />

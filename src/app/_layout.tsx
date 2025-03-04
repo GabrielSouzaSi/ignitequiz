@@ -31,7 +31,11 @@ export default function Layout() {
             headerShown: false,
             contentStyle: { backgroundColor: colors.grey[800] },
           }}
-        />
+        >
+          <Stack.Screen name="history" options={{gestureEnabled: false}}/>
+          <Stack.Screen name="quiz/[id]" options={{gestureEnabled: false}}/>
+          <Stack.Screen name="finish" options={{gestureEnabled: false}}/>
+        </Stack>
       </View>
     </GestureHandlerRootView>
   )
