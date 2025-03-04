@@ -1,3 +1,7 @@
+### Resultado Final 🚀✨
+
+![Image](https://github.com/user-attachments/assets/90ba633e-9f8f-4f05-a65e-e09d2f22f819)
+
 # Projeto Original [link](https://github.com/rocketseat-education/ignitequiz_template)
 # Animações e Microinteração em React Native Expo
 
