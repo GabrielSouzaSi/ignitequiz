@@ -2,6 +2,7 @@ import { Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { Button } from '@/components/Button';
+import { Stars } from '@/components/Stars';
 
 export default function Finish() {
   const router = useRouter();
@@ -10,6 +11,7 @@ export default function Finish() {
   return (
     <View className='flex-1 justify-center bg-gray-800'>
       <View className='items-center mb-20'>
+        <Stars />
         <Text className='color-gray-100 font-roboto-700-bold text-2xl mt-10'>
           Parabéns!
         </Text>
