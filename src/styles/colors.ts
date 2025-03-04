@@ -14,5 +14,11 @@ export const colors = {
     warning_light: "#FBA94C",
     danger_light: "#F75A68",
 
-    label: "#A6A1B2",    
+    label: "#A6A1B2",
+    info: "#57B6E5",
+    
+    start_blue: "#57B6E5",
+    start_green: "#00B37E",
+    start_gray: "#6F6F6F"
+
 }
