@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Alert, Text, View, ViewStyle } from 'react-native';
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { Audio } from "expo-av";
 
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withSequence, withTiming, useAnimatedScrollHandler, Extrapolation, runOnJS } from 'react-native-reanimated';
@@ -41,6 +42,15 @@ export default function Quiz() {
 
   const { id } = useLocalSearchParams();
 
+  async function playSound(isCorrect: boolean) {
+    const file = isCorrect ? require("@/assets/correct.mp3") : require("@/assets/wrong.mp3");
+    const { sound } = await Audio.Sound.createAsync(file, { shouldPlay: true });
+
+    await sound.setPositionAsync(0);
+    await sound.playAsync();
+
+  }
+
   function handleSkipConfirm() {
     Alert.alert('Pular', 'Deseja realmente pular a questão?', [
       { text: 'Sim', onPress: () => handleNextQuestion() },
@@ -80,10 +90,12 @@ export default function Quiz() {
     }
 
     if (quiz.questions[currentQuestion].correct === alternativeSelected) {
-      setStatusReplay(1);
       setPoints(prevState => prevState + 1);
+      await playSound(true);
+      setStatusReplay(1);
       handleNextQuestion();
     } else {
+      await playSound(false);
       setStatusReplay(2);
       shakeAnimation();
     }
@@ -111,7 +123,7 @@ export default function Quiz() {
   function shakeAnimation() {
     shake.value = withSequence(withTiming(3, { duration: 400, easing: Easing.bounce }), withTiming(0, undefined, (finished) => {
       'worlet';
-      if(finished) {
+      if (finished) {
         runOnJS(handleNextQuestion)();
       }
     }))
@@ -159,20 +171,20 @@ export default function Quiz() {
   })
 
   const onPan = Gesture
-  .Pan()
-  .activateAfterLongPress(200)
-  .onUpdate((event) => {
-    const moveToLeft = event.translationX < 0;
-    if (moveToLeft) {
-      cardPosition.value = event.translationX;
-    }
-  })
-  .onEnd((event) => {
-    if (event.translationX < CARD_SKIP_AREA){
-      runOnJS(handleSkipConfirm)();
-    }
-    cardPosition.value = withTiming(0);
-  })
+    .Pan()
+    .activateAfterLongPress(200)
+    .onUpdate((event) => {
+      const moveToLeft = event.translationX < 0;
+      if (moveToLeft) {
+        cardPosition.value = event.translationX;
+      }
+    })
+    .onEnd((event) => {
+      if (event.translationX < CARD_SKIP_AREA) {
+        runOnJS(handleSkipConfirm)();
+      }
+      cardPosition.value = withTiming(0);
+    })
 
   const dragStyles = useAnimatedStyle<ViewStyle>(() => {
     const rotateZ = cardPosition.value / CARD_INCLINATION;
